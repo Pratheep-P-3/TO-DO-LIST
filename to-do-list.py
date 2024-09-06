@@ -1,49 +1,72 @@
-import random
+task_items = []
 
-def roll_dice():
-    min_num = 1
-    max_num = 6
-    result = random.randint(min_num, max_num)
-    return result
+def show_options():
+    print("\n1. Add task")
+    print("2. Remove task")
+    print("3. View tasks")
+    print("4. Mark task as done")
+    print("5. Edit a task")
+    print("6. Exit")
+
+def add_task():
+    new_task = input("Enter task: ")
+    task_items.append({"task": new_task, "done": False})
+    print(f"Task '{new_task}' added.")
+
+def remove_task():
+    remove_task = input("Enter task to remove: ")
+    for t in task_items:
+        if t['task'] == remove_task:
+            task_items.remove(t)
+            print(f"Task '{remove_task}' removed.")
+            return
+    print("Task not found.")
+
+def view_tasks():
+    if task_items:
+        print("\nTask List:")
+        for index, t in enumerate(task_items):
+            completion_status = "Done" if t['done'] else "Pending"
+            print(f"{index + 1}. {t['task']} - {completion_status}")
+    else:
+        print("No tasks available.")
+
+def mark_task_done():
+    done_task = input("Enter task to mark as done: ")
+    for t in task_items:
+        if t['task'] == done_task:
+            t['done'] = True
+            print(f"Task '{done_task}' marked as done.")
+            return
+    print("Task not found.")
+
+def edit_task():
+    task_to_edit = input("Enter task to edit: ")
+    for t in task_items:
+        if t['task'] == task_to_edit:
+            new_task_name = input("Enter new task name: ")
+            t['task'] = new_task_name
+            print(f"Task '{task_to_edit}' updated to '{new_task_name}'.")
+            return
+    print("Task not found.")
 
 while True:
-    num_players = input("Enter number of players (2 - 4): ")
-    if num_players.isdigit():
-        num_players = int(num_players)
-        if 2 <= num_players <= 4:
-            break
-        else:
-            print("The number of players must be between 2 and 4.")
+    show_options()
+    user_choice = input("Enter your choice: ")
+
+    if user_choice == '1':
+        add_task()
+    elif user_choice == '2':
+        remove_task()
+    elif user_choice == '3':
+        view_tasks()
+    elif user_choice == '4':
+        mark_task_done()
+    elif user_choice == '5':
+        edit_task()
+    elif user_choice == '6':
+        print("Exiting program.")
+        break
     else:
-        print("Invalid input, please try again.")
+        print("Invalid input. Please try again.")
 
-target_score = 50
-scores = [0 for _ in range(num_players)]
-
-while max(scores) < target_score:
-    for i in range(num_players):
-        print("\nPlayer", i + 1, "it's your turn!")
-        print("Current score:", scores[i], "\n")
-        turn_score = 0
-
-        while True:
-            roll_choice = input("Do you want to roll the dice (y)? ")
-            if roll_choice.lower() != "y":
-                break
-
-            roll_result = roll_dice()
-            if roll_result == 1:
-                print("You rolled a 1! Turn ends now.")
-                turn_score = 0
-                break
-            else:
-                turn_score += roll_result
-                print("You rolled:", roll_result)
-                print("Turn score:", turn_score)
-
-        scores[i] += turn_score
-        print("Your total score:", scores[i])
-
-highest_score = max(scores)
-winner_index = scores.index(highest_score)
-print("Player", winner_index + 1, "wins with a score of:", highest_score)
